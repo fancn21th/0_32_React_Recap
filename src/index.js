@@ -2,154 +2,143 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// class Square extends React.Component {
-//     render() {
-//         return (
-//             <button className="square" onClick={() => this.props.onClick()}>
-//                 {this.props.value}
-//             </button>
-//         );
-//     }
-// }
 
-function Square(props) {
+class Todos extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const todoList = this.props.todoList;
+    const todos = todoList.map((todo, key) => {
+      return (
+        <li className="todo-list-li" key={key}>
+          <input type="checkbox" checked={todo.status} onChange={() => this.props.handleCheckboxChange(key)}/>
+          {todo.name}
+        </li>
+      );
+    });
+
     return (
-        <button className="square" onClick={props.onClick}>
-            {props.value}
-        </button>
+      <ul className="todo-list">
+        {todos}
+      </ul>
+    )
+  }
+}
+
+
+class TodoBoard extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      todoList: [
+        {
+          name: "123",
+          status: false,
+        },
+        {
+          name: "234",
+          status: false,
+        },
+      ],
+      todoListFilter: [
+        {
+          name: "123",
+          status: false,
+        },
+        {
+          name: "234",
+          status: false,
+        },
+      ],
+      newTodo: ''
+    };
+    this.handleAddInputChange = this.handleAddInputChange.bind(this);
+    this.addNewTodo = this.addNewTodo.bind(this);
+  }
+
+
+  handleAddInputChange(event) {
+    this.setState({newTodo: event.target.value});
+  }
+
+  addNewTodo() {
+    const value = this.state.newTodo;
+    if (value) {
+      const todoList = this.state.todoList.slice();
+      todoList.push({
+        name: value,
+        status: false,
+      });
+      this.setState({
+        todoList: todoList,
+        todoListFilter: todoList,
+        newTodo: ''
+      })
+    }
+    else {
+      return false
+    }
+  }
+
+  handleCheckboxChange(key) {
+    const todoList = this.state.todoList.slice();
+    todoList[key].status = !todoList[key].status;
+    this.setState({
+      todoList: todoList,
+      todoListFilter: todoList,
+    })
+  }
+
+  filterAll() {
+    const todoList = this.state.todoList.filter((item) => true);
+    this.setState({
+      todoListFilter: todoList,
+    })
+  }
+
+  filterChecked() {
+    const todoList = this.state.todoList.filter((item) => item.status === true);
+    this.setState({
+      todoListFilter: todoList,
+    })
+  }
+
+  filterUnChecked() {
+    const todoList = this.state.todoList.filter((item) => item.status === false);
+    this.setState({
+      todoListFilter: todoList,
+    })
+  }
+
+
+  render() {
+    const todoList = this.state.todoListFilter;
+    const newTodo = this.state.newTodo;
+
+    return (
+      <div className="todo-board">
+        <div className="add-a-todo">
+          <input type="text" value={newTodo} onChange={this.handleAddInputChange}/>
+          <button onClick={() => this.addNewTodo()}>Add a Todo</button>
+        </div>
+        <Todos todoList={todoList} handleCheckboxChange={(key) => this.handleCheckboxChange(key)}/>
+        <div className="filter-btn">
+          <button onClick={() => this.filterAll()}>All</button>
+          <button onClick={() => this.filterChecked()}>Complete</button>
+          <button onClick={() => this.filterUnChecked()}>Active</button>
+        </div>
+      </div>
     );
+  }
 }
 
-class Board extends React.Component {
-    renderSquare(i) {
-        return <Square
-                    value={this.props.squares[i]}
-                    onClick={() => this.props.onClick(i)}
-                />;
-    }
-
-    render() {
-        return (
-            <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        );
-    }
-}
-
-class Game extends React.Component {
-    handleClick(i) {
-        const history = this.state.history.slice(0, this.state.stepNumber + 1);
-        const current = history[history.length - 1];
-        const squares = current.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
-            return;
-        }
-        squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
-            history: history.concat([{
-                squares: squares,
-            }]),
-            stepNumber: history.length,
-            xIsNext: !this.state.xIsNext,
-        });
-    }
-
-    jumpTo(step) {
-        this.setState({
-            stepNumber: step,
-            xIsNext: (step % 2) === 0,
-        });
-    }
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            history: [{
-                squares: Array(9).fill(null),
-            }],
-            stepNumber: 0,
-            xIsNext: true,
-        };
-    }
-
-    render() {
-        const history = this.state.history;
-        const current = history[this.state.stepNumber];
-        const winner = calculateWinner(current.squares);
-
-        const moves = history.map((step, move) => {
-            const desc = move ?
-                'Go to move #' + move :
-                'Go to game start';
-            return (
-                <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
-                </li>
-            );
-        });
-
-        let status;
-        if (winner) {
-            status = 'Winner: ' + winner;
-        } else {
-            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-        }
-
-        return (
-            <div className="game">
-                <div className="game-board">
-                    <Board
-                        squares={current.squares}
-                        onClick={(i) => this.handleClick(i)}
-                    />
-                </div>
-                <div className="game-info">
-                    <div>{status}</div>
-                    <ol>{moves} </ol>
-                </div>
-            </div>
-        );
-    }
-}
-
-function calculateWinner(squares) {
-    const lines = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-        const [a, b, c] = lines[i];
-        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
-        }
-    }
-    return null;
-}
 
 // ========================================
 
 ReactDOM.render(
-    <Game />,
-    document.getElementById('root')
+  <TodoBoard/>,
+  document.getElementById('root')
 );
