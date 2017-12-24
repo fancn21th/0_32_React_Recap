@@ -58,6 +58,7 @@ export default class Todos extends Component {
                 />
                 <div className="todoListContainer">
                     <ListView
+                        filterStatus={this.state.filterStatus}
                         todos={this.state.todos}
                         handleCheck={this.handleCheck}
                     />
