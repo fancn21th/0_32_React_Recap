@@ -6,22 +6,37 @@ export default class Todos extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            todos: []
+            todos: {}
         }
 
         this.handleTodoSubmit = this.handleTodoSubmit.bind(this)
+        this.handleCheck = this.handleCheck.bind(this)
     }
 
     handleTodoSubmit(title) {
         const todo = {
-            key: Date.now(),
+            id: Date.now(),
             title,
+            status: 'active'
         }
         this.setState({
-            todos: [
+            todos: {
                 ...this.state.todos,
-                todo
-            ]
+                [todo.id]: todo,
+            }
+        })
+    }
+
+    handleCheck(id) {
+        const toogleTodo = {
+            ...this.state.todos[id],
+            status: this.state.todos[id].status === 'active' ? 'complete' : 'active'
+        }
+        this.setState({
+            todos: {
+                ...this.state.todos,
+                [id]: toogleTodo,
+            }
         })
     }
 
@@ -33,6 +48,7 @@ export default class Todos extends Component {
                 />
                 <ListView
                     todos={this.state.todos}
+                    handleCheck={this.handleCheck}
                 />
             </div>
         )

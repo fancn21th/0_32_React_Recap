@@ -26,7 +26,10 @@ class Header extends Component {
     render() {
         return (
             <div>
-                <input type="text" value={this.state.value} onChange={this.handleChange}/>
+                <input
+                    type="text" value={this.state.value}
+                    onChange={this.handleChange}
+                />
                 <button onClick={this.handleSubmit}>Add a todo</button>
             </div>
         )
