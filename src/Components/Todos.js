@@ -13,9 +13,7 @@ export default class Todos extends Component {
 
         this.handleTodoSubmit = this.handleTodoSubmit.bind(this)
         this.handleCheck = this.handleCheck.bind(this)
-        this.showAll = this.showAll.bind(this)
-        this.showActive = this.showActive.bind(this)
-        this.showComplete = this.showComplete.bind(this)
+        this.filter = this.filter.bind(this)
     }
 
     handleTodoSubmit(title) {
@@ -45,21 +43,9 @@ export default class Todos extends Component {
         })
     }
 
-    showAll() {
+    filter(status) {
         this.setState({
-            filterStatus: 'all'
-        })
-    }
-
-    showActive() {
-        this.setState({
-            filterStatus: 'active'
-        })
-    }
-
-    showComplete() {
-        this.setState({
-            filterStatus: 'complete'
+            filterStatus: status.toLowerCase()
         })
     }
 
@@ -76,9 +62,7 @@ export default class Todos extends Component {
                     />
                 </div>
                 <Footer
-                    showAll={this.showAll}
-                    showActive={this.showActive}
-                    showComplete={this.showComplete}
+                    filter={this.filter}
                     status={this.state.filterStatus}
                 />
             </div>

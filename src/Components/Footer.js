@@ -1,10 +1,11 @@
 import React from 'react'
+import FilterButton from './FilterButton'
 
 const Footer = (props) => (
     <div>
-        <button className={props.status ==='all' ? 'activeFilter' : ''} onClick={props.showAll}>All</button>
-        <button className={props.status ==='active' ? 'activeFilter' : ''} onClick={props.showActive}>Active</button>
-        <button className={props.status ==='complete' ? 'activeFilter' : ''} onClick={props.showComplete}>Complete</button>
+        <FilterButton title="All" {...props} handleClick={props.filter}/>
+        <FilterButton title="Active" {...props} handleClick={props.filter}/>
+        <FilterButton title="Complete" {...props} handleClick={props.filter}/>
     </div>
 )
 
