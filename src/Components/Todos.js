@@ -44,6 +44,7 @@ export default class Todos extends Component {
     }
 
     filter(status) {
+        console.log(status)
         this.setState({
             filterStatus: status.toLowerCase()
         })
@@ -62,7 +63,7 @@ export default class Todos extends Component {
                     />
                 </div>
                 <Footer
-                    filter={this.filter}
+                    handleFilter={this.filter}
                     status={this.state.filterStatus}
                 />
             </div>
