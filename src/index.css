@@ -53,3 +53,15 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+/* Todos Specific Styles */
+.todoListContainer {
+    border: 1px solid black;
+    width: 200px;
+    min-height: 200px;
+    margin: 10px 0px;
+    padding: 10px;
+}
+.activeFilter{
+    background: orangered;
+}
